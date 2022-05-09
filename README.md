@@ -91,7 +91,6 @@ command=~/path/to/i3blocks-crypto/crypto BTCUSDT
 
 ## Ideas
 
-* Add option to use Bitfinex API instead of CoinMarketCap. Perhaps use any exchange with ccxt
 * Trigger something when block is clicked. Open coin's information in web browser, or copy the current price, or open exchange in web browser, etc.
 * Add indicator functionality. Alert whenever an indicator has a crossover, SMA? PSAR? etc.
 
