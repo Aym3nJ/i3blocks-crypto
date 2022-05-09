@@ -37,21 +37,14 @@
     label=
     markup=pango
     interval=60
-    instance=bitcoin
-    command=~/path/to/i3blocks-crypto/crypto # CHANGE ME
-
-    [crypto]
-    label=
-    markup=pango
-    interval=57
-    instance=bitcoin-cash
+    instance=BTCUSDT
     command=~/path/to/i3blocks-crypto/crypto # CHANGE ME
 
     [crypto]
     label=
     markup=pango
     interval=63
-    instance=ethereum
+    instance=ETHUSDT
     command=~/path/to/i3blocks-crypto/crypto # CHANGE ME
     ```
 
@@ -74,26 +67,15 @@ Adding a new coin to your i3blocks config is super simple. Use this template wit
 label=<icon>
 markup=pango
 interval=60
-instance=<coin tag used by CoinMarketCap>
+instance=<coin tag used by Binance>
 command=~/path/to/i3blocks-crypto/crypto
 ```
 
-The "crypto" script uses CoinMarketCap's API to query prices. To find out the tag name of the coin you want to add, visit the coin's page on CoinMarketCap (eg. https://coinmarketcap.com/currencies/stellar/ for stellar lumen), copy the last part of the URL (eg. `stellar`) and paste it in the `instance` attribute.
+The "crypto" script uses Binance's free to use API no login needed to query prices. To find out the tag name of the coin you want to add, visit the API's docs for more info (eg. https://binance-docs.github.io/apidocs/spot/en/)
 
 You can add a custom rocket icon as the label as well. First, search "rocket" in http://nerdfonts.com/#cheat-sheet, second, copy the hex value ("f135"), next, paste the hex value into the "hexadecimal" text area in https://r12a.github.io/apps/conversion/, lastly, copy the character output from the "characters" text area and paste it into the `label` attribute.
 
 ![XLM crypto i3block](https://user-images.githubusercontent.com/19287477/34461338-9bf60570-ee61-11e7-8217-5ad510b19ffd.png)
-
-Code for stellar lumen:
-
-```
-[crypto]
-label=
-markup=pango
-interval=60
-instance=stellar
-command=~/path/to/i3blocks-crypto/crypto
-```
 
 ### Display Price in BTC
 
@@ -104,17 +86,8 @@ By default the coin values are displayed in USD. Add the argument BTC to the com
 label=$
 markup=pango
 interval=61
-instance=waves
-command=~/path/to/i3blocks-crypto/crypto BTC
+command=~/path/to/i3blocks-crypto/crypto BTCUSDT
 ```
-
-### Price Change Alerts
-
-By default, the price change is based on previous hour. Available: hourly (default) (`1h`), daily (`24h`) and weekly (`7d`) price changes. To customize which price change period to use, modify the `PRICE_CHANGE_PERIOD` variable in the "crypto" script.
-
-Price changes above 10% will make the ticker turn red. To change this behaviour, modify the `PRICE_CHANGE_URGENT_PERCENT` variable in the "crypto" script.
-
----
 
 ## Ideas
 
