@@ -3,49 +3,55 @@
 
 import json
 from requests import Request, Session
-from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
+#from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
 import os
-import sys
 
-API_KEY = "YOUR-COINMARKETCAP-API-KEY-HERE"
-PRICE_CHANGE_PERIOD = '1h' # Available: '1h', '24h', '7d'
-PRICE_CHANGE_URGENT_PERCENT = 10
+#
+#
+#  [
+#      1646056920000, // Open time
+#      "38041.59000000",// Open
+#      "38059.07000000", // High
+#      "38030.23000000", // Low
+#      "38030.23000000", // Close
+#      "3.09046500", // Volume
+#      1646056979999, // Close time
+#      "117566.27219701", // Quote asset volume
+#      109, // Number of trades
+#      "1.45801000", // Taker buy base asset volume
+#      "55466.57342905", // Taker buy quote asset volume
+#      "0" // Ignore
+#    ]
+#
 
-API_URL = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest'
-coin = os.environ.get('BLOCK_INSTANCE', 'bitcoin')
+PRICE_CHANGE_PERIOD = '1d'  # Available: '1h', '24h', '7d'
 
-parameters = {
-    'slug': coin
-}
-headers = {
-    'Accepts': 'application/json',
-    'X-CMC_PRO_API_KEY': API_KEY,
-}
+coin = os.environ.get('BLOCK_INSTANCE', 'BTCUSDT')
+API_URL = 'https://api.binance.com/api/v3/klines?symbol={}&interval={}&limit=1'.format(
+    coin, PRICE_CHANGE_PERIOD)
 
 session = Session()
-session.headers.update(headers)
 
-r = session.get(API_URL, params=parameters)
-data = json.loads(r.text)['data']
-data = data[list(data.keys())[0]]
+r = session.get(API_URL)
+data = json.loads(r.text)
 
-base = 'USD'
-quote = data['quote'][base]
-price = float(quote['price'])
+
+price = float(data[0][4])
+openprice = float(data[0][1])
 
 # Only USD as base currently supported by free version of Coinmarketcap API, AFAIK
-if price > 100: precision = 0
-elif price > 0.1: precision = 2
-else: precision = 6
+if price > 100:
+    precision = 0
+elif price > 0.1:
+    precision = 2
+else:
+    precision = 6
 
-percentChange = float(quote['percent_change_' + PRICE_CHANGE_PERIOD])
+percentChange = float((100.0/openprice)*(price-openprice))
 percentChangeFormat = '<span color="{}">{}{:.2f}%</span>'
-if percentChange > 0: percentChangeInfo = percentChangeFormat.format('#3BB92D', '🠕 ', percentChange)
+if percentChange > 0: percentChangeInfo = percentChangeFormat.format('#3BB92D', ' ', percentChange)
 elif percentChange == 0: percentChangeInfo = percentChangeFormat.format('#CCCCCC', '', percentChange)
-else: percentChangeInfo = percentChangeFormat.format('#F7555E', '🠗 ', percentChange)
+else: percentChangeInfo = percentChangeFormat.format('#F7555E', ' ', percentChange)
 
-print(('{} {:.' + str(precision) + 'f} {}').format(data['symbol'], price, percentChangeInfo)) # Full Text
-print(('{} {:.' + str(precision) + 'f}').format(data['symbol'], price)) # Short Text
-
-if percentChange > PRICE_CHANGE_URGENT_PERCENT:
-    exit(33)
+print(('{} {:.' + str(precision) + 'f} {}').format(coin, price, percentChangeInfo)) # Full Text
+print(('{} {:.' + str(precision) + 'f}').format(coin, price)) # Short Text
